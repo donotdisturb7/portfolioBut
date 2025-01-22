@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .page-container {
+    @apply container mx-auto px-4 py-8;
+  }
+  .section-title {
+    @apply text-3xl font-bold mb-6 text-gray-800;
+  }
+}
