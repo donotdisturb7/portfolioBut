@@ -11,7 +11,7 @@
 
 1. Clonez le dépôt :
 ```bash
-git clone [URL_DU_REPO]
+git clone git@github.com:donotdisturb7/portfolioBut.git
 cd PortfolioBUT
 ```
 
