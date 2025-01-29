@@ -3,13 +3,13 @@
     <h1 class="text-3xl font-bold text-gray-900 mb-8">Projets des Etudiants</h1>
     
     <div v-if="user" class="mb-8">
-      <button @click="showAddProject = true" 
+      <button @click="handleButtonClick" 
               class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-md transition-colors">
         Ajouter un nouveau projet
       </button>
     </div>
 
-    <AddProjectModal v-if="showAddProject" @add-project="addProject" @close="showAddProject = false" />
+    <AddProjectModal v-if="showAddProject" @add-project="addProject" @close="closeModal" />
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <div v-for="project in projects" :key="project.id" 
@@ -66,20 +66,33 @@ onMounted(async () => {
   console.log('Projets chargés:', projects.value)
 
   // Vérification de l'utilisateur connecté
-  const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
   if (sessionError) {
     console.error('Erreur lors de la récupération de la session:', sessionError)
     return
   }
 
-  user.value = sessionData?.user || null
+  user.value = session?.user || null
   console.log('Utilisateur connecté:', user.value)
 })
 
+const handleButtonClick = () => {
+  console.log('Bouton cliqué')
+  showAddProject.value = true
+  console.log('showAddProject:', showAddProject.value)
+}
+
+const closeModal = () => {
+  showAddProject.value = false
+  console.log('Modal fermé')
+}
+
 const addProject = async (projectData) => {
   try {
+    console.log('Données du projet à ajouter:', projectData)
+    
     // Ajout du projet dans la base de données
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('projets')
       .insert([
         {
@@ -92,15 +105,20 @@ const addProject = async (projectData) => {
         }
       ])
 
-    if (error) throw error
+    if (error) {
+      console.error('Erreur lors de l\'ajout du projet:', error)
+      return
+    }
+
+    console.log('Projet ajouté:', data)
     
     // Actualisation de la liste des projets
-    const { data } = await supabase
+    const { data: updatedData } = await supabase
       .from('projets')
       .select('*')
       .order('dateCreation', { ascending: false })
     
-    projects.value = data
+    projects.value = updatedData
     showAddProject.value = false
   } catch (error) {
     console.error('Erreur lors de l\'ajout du projet:', error)

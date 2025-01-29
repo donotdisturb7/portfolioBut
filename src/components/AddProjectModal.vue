@@ -51,10 +51,13 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { useAuthStore } from '@/stores/auth'
   
-  const show = ref(false)
+  // Définir les événements émis par le composant
+  const emit = defineEmits(['add-project', 'close'])
+  
+  const show = ref(true)
   const type = ref('')
   const title = ref('')
   const description = ref('')
@@ -77,6 +80,7 @@
   
   const closeModal = () => {
     show.value = false
+    emit('close')
   }
   
   const handleSubmit = () => {
@@ -93,4 +97,17 @@
     emit('add-project', projectData)
     closeModal()
   }
+  
+  // Watch the show prop to reset the form when the modal is opened
+  watch(show, (newVal) => {
+    if (newVal) {
+      type.value = ''
+      title.value = ''
+      description.value = ''
+      technologies.value = []
+      technologyInput.value = ''
+      github_url.value = ''
+      project_url.value = ''
+    }
+  })
   </script>
