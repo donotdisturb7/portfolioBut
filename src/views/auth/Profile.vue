@@ -1,16 +1,10 @@
 <template>
     <div>
-        <h1>Profile</h1>
-        <div>
-            Prenom : {{ authStore.utilisateur?.prenom }}
-            <br>
-            Nom : {{ authStore.utilisateur?.nom }}
-        </div>
+        <h1> {{ authStore.fullName }}</h1>
     </div>
-</template> 
+</template>
 
 <script setup>
 import { useAuthStore } from '@/stores/auth'
-
 const authStore = useAuthStore()
 </script>

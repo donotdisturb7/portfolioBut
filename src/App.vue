@@ -1,23 +1,26 @@
-<script setup>
-import { ref } from 'vue'
-import Navbar from '@/components/NavBar.vue'
-import FooterSection from '@/components/FooterSection.vue'
-
-const mobileMenuOpen = ref(false)
-
-
-</script>
-
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col">
-    <Navbar v-if="!$route.meta.hideNavbar" />
-    <main class="w-full flex-grow">
-      <router-view></router-view>
+  <div class="min-h-screen bg-gray-100 flex flex-col">
+    <NavBar />
+    <main class="flex-grow">
+      <router-view v-slot="{ Component }">
+        <Suspense>
+          <component :is="Component" />
+        </Suspense>
+      </router-view>
     </main>
-    <FooterSection v-if="!$route.meta.hideNavbar" />
+    <FooterSection />
   </div>
 </template>
 
+<script setup>
+import { useAuthStore } from './stores/auth'
+import NavBar from './components/NavBar.vue'
+import FooterSection from './components/FooterSection.vue'
+
+const authStore = useAuthStore()
+authStore.initialize()
+
+</script>
 <style>
 #app {
   width: 100%;

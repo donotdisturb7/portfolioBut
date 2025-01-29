@@ -1,58 +1,61 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { auth } from '../firebase/config'
-import Home from '../views/Home.vue'
-import Login from '../views/auth/Login.vue'
-import Register from '../views/auth/Register.vue'
-import Profile from '../views/auth/Profile.vue'
-import Projects from '../views/Projects.vue'
-import Tutoriels from '../views/Tutoriels.vue'
+import { supabase } from '@/config/supabase'
+
+// Définition des routes de l'application
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
-  },
-  {
-    path: '/Projets',
-    name: 'Projects',
-    component: Projects
-  },
-  {
-    path: '/Tutoriels',
-    name: 'Tutoriels',
-    component: Tutoriels
+    component: () => import('@/views/Home.vue')
   },
   {
     path: '/login',
-    name: 'login',
-    component: Login,
-    meta: { requiresGuest: true, hideNavbar: true }
+    name: 'Login',
+    component: () => import('@/views/auth/Login.vue')
   },
   {
     path: '/register',
-    name: 'register',
-    component: Register,
-    meta: { requiresGuest: true, hideNavbar: true }
+    name: 'Register',
+    component: () => import('@/views/auth/Register.vue')
   },
   {
+    path: '/projets',
+    name: 'Projets',
+    component: () => import('@/views/Projects.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/tutoriels',
+    name: 'Tutoriels',
+    component: () => import('@/views/Tutoriels.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/ressources',
+    name: 'Ressources',
+    component: () => import('@/views/Resources.vue'),
+    meta: { requiresAuth: true }
+  }, 
+  {
     path: '/profile',
-    name: 'profile',
-    component: Profile,
-    meta: { requiresAuth: true, hideNavbar: true }
+    name: 'Profile',
+    component: () => import('@/views/auth/Profile.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
+// Création du routeur avec l'historique web
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const requiresGuest = to.matched.some(record => record.meta.requiresGuest)
-  const isAuthenticated = auth.currentUser
-
-  if (requiresGuest && isAuthenticated) {
-    next('/')
+// Vérification de l'authentification
+router.beforeEach(async (to, from, next) => {
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  if (to.meta.requiresAuth && !session) {
+    next('/login')
   } else {
     next()
   }
