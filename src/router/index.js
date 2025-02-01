@@ -50,11 +50,12 @@ const router = createRouter({
   routes
 })
 
-// Vérification de l'authentification
+// Navigation guard pour vérifier l'authentification
 router.beforeEach(async (to, from, next) => {
   const { data: { session } } = await supabase.auth.getSession()
   
   if (to.meta.requiresAuth && !session) {
+    // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
     next('/login')
   } else {
     next()
