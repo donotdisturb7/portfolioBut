@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-white min-h-screen">
+  <!-- <section class="bg-white min-h-screen">
     <div class="container px-6 py-10 mx-auto">
       <h1 class="text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl">Ressources</h1>
 
@@ -14,7 +14,31 @@
     </div>
 
     <ResourceModal :show="showModal" :title="modalTitle" :content="modalContent" :link="modalLink" @close="closeModal" />
-  </section>
+  </section> -->
+
+  <section class="bg-white dark:bg-gray-900">
+    <div class="container px-6 py-10 mx-auto">
+        <h1 class="text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl dark:text-white">Ressources</h1>
+
+        <p class="mt-4 text-center text-gray-500 dark:text-gray-300">
+            Bienvenue sur le recueil des ressources
+        </p>
+
+        <div class="grid grid-cols-1 gap-8 mt-8 xl:mt-12 md:grid-cols-2 xl:grid-cols-3">
+            <div v-for="resource in resources" :key="resource.id" @click="openModal(resource.titre, resource.description, resource.url)" class="cursor-pointer">
+                <img class="object-cover w-full rounded-lg h-96"
+                     :src="resource.image_url"
+                     :alt="`Image de ${resource.titre}`">
+                <h2 class="mt-4 text-xl font-semibold text-gray-800 capitalize dark:text-white">{{ resource.titre }}</h2>
+                <p class="mt-2 text-lg tracking-wider text-blue-500 uppercase dark:text-blue-400">{{ resource.type }}</p>
+            </div>
+        </div>
+    </div>
+
+    <ResourceModal :show="showModal" :title="modalTitle" :content="modalContent" :link="modalLink" @close="closeModal" />
+</section>
+
+
 </template>
 
 <script setup>
