@@ -1,18 +1,21 @@
 <template>
-  <section class="bg-white">
-    <div class="container px-6 py-10 mx-auto">
-      <h1 class="text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl">
-        Tutoriels
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Tutoriels</h1>
         <button
           v-if="user"
-          @click="handleButtonClick"
-          class="ml-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
+          @click="showAddTutorial = true"
+          class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          Nouveau tutoriel
+          <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Ajouter un tutoriel
         </button>
-      </h1>
+      </div>
 
-      <div class="flex py-4 mt-4 overflow-x-auto overflow-y-hidden md:justify-center">
+      <div class="flex py-4 overflow-x-auto overflow-y-hidden md:justify-center">
         <button
           v-for="category in categories"
           :key="category"
@@ -28,69 +31,59 @@
         </button>
       </div>
 
-      <section class="mt-8 space-y-8 lg:mt-12">
-        <div v-if="filteredTutorials.length === 0" class="text-center py-12 text-gray-500">
-          Aucun tutoriel dans cette catégorie
+      <div v-if="filteredTutorials.length === 0" class="text-center py-12">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun tutoriel dans cette catégorie</h3>
+        <p class="mt-1 text-sm text-gray-500">
+          Commencez par créer votre premier tutoriel.
+        </p>
+        <div class="mt-6">
+          <button
+            @click="showAddTutorial = true"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Créer un tutoriel
+          </button>
         </div>
+      </div>
 
-        <section v-for="tutorial in filteredTutorials" :key="tutorial.id" class="lg:flex lg:items-center mb-12">
-          <div class="lg:w-1/2">
-            <p class="text-lg tracking-wider text-blue-500 uppercase">{{ tutorial.categorie }}</p>
-            <h2 class="mt-2 text-2xl font-semibold text-gray-800 capitalize">
-              {{ tutorial.titre }}
-              <!-- Bouton de suppression -->
-              <button
-                v-if="user && tutorial.idUtilisateur === user.id"
-                @click="deleteTutorial(tutorial)"
-                class="ml-2 p-1 text-red-500 hover:text-red-600 transition-colors"
-                title="Supprimer ce tutoriel"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
-              </button>
-            </h2>
-            <div class="mt-4 prose">
-              <div class="text-gray-600 mb-4">
-                <span class="mr-4">
-                  <i class="fas fa-calendar"></i>
-                  {{ new Date(tutorial.dateCreation).toLocaleDateString() }}
-                </span>
-              </div>
-              <div v-html="compiledMarkdown(tutorial.content)" class="line-clamp-3"></div>
-            </div>
-          </div>
-
-          <div class="mt-4 lg:w-1/2 lg:mt-0" v-if="tutorial.image">
-            <img 
-              class="object-cover w-full h-64 rounded-lg md:h-96"
-              :src="tutorial.image"
-              :alt="tutorial.titre"
-            >
-          </div>
-        </section>
-      </section>
+      <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
+        <TutorialCard
+          v-for="tutorial in filteredTutorials"
+          :key="tutorial.id"
+          :tutorial="tutorial"
+          :can-delete="user && tutorial.idUtilisateur === user.id"
+          @delete="deleteTutorial"
+        />
+      </div>
     </div>
 
+    <!-- Modal d'ajout de tutoriel -->
     <AddTutorialModal
       :show="showAddTutorial"
       @close="closeModal"
-      @add-tutorial="addTutorial"
+      @tutorial-added="addTutorial"
     />
-  </section>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { supabase } from '@/config/supabase'
-import AddTutorialModal from '@/components/AddTutorialModal.vue'
-import { marked } from 'marked'
+import { supabase } from '@/supabase'
+import { useAuthStore } from '@/stores/auth'
+import AddTutorialModal from '@/components/tutorial/AddTutorialModal.vue'
+import TutorialCard from '@/components/tutorial/TutorialCard.vue'
 
+const authStore = useAuthStore()
 const user = ref(null)
 const tutorials = ref([])
 const showAddTutorial = ref(false)
 const selectedCategory = ref('Tous')
-
 const categories = computed(() => {
   const uniqueCategories = new Set(tutorials.value.map(t => t.categorie))
   return ['Tous', ...Array.from(uniqueCategories)]
@@ -100,28 +93,22 @@ const filteredTutorials = computed(() => {
   if (selectedCategory.value === 'Tous') {
     return tutorials.value
   }
-  return tutorials.value.filter(t => t.categorie === selectedCategory.value)
+  return tutorials.value.filter(tutorial => tutorial.categorie === selectedCategory.value)
 })
 
-onMounted(async () => {
-  const { data, error } = await supabase
-    .from('tutoriels')
-    .select('*')
-    .order('dateCreation', { ascending: false })
+const fetchTutorials = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('tutoriels')
+      .select('*')
+      .order('dateCreation', { ascending: false })
 
-  if (error) {
+    if (error) throw error
+
+    tutorials.value = data
+  } catch (error) {
     console.error('Erreur lors du chargement des tutoriels:', error)
-    return
   }
-
-  tutorials.value = data
-
-  const { data: { session } } = await supabase.auth.getSession()
-  user.value = session?.user || null
-})
-
-const handleButtonClick = () => {
-  showAddTutorial.value = true
 }
 
 const closeModal = () => {
@@ -129,39 +116,8 @@ const closeModal = () => {
 }
 
 const addTutorial = async (tutorialData) => {
-  try {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      console.error('Utilisateur non connecté')
-      return
-    }
-
-    const { data, error } = await supabase
-      .from('tutoriels')
-      .insert([
-        {
-          titre: tutorialData.title,
-          content: tutorialData.content,
-          categorie: tutorialData.category,
-          image: tutorialData.image,
-          dateCreation: new Date(),
-          dateModification: new Date(),
-          idUtilisateur: session.user.id
-        }
-      ])
-
-    if (error) throw error
-
-    const { data: updatedData } = await supabase
-      .from('tutoriels')
-      .select('*')
-      .order('dateCreation', { ascending: false })
-    
-    tutorials.value = updatedData
-    showAddTutorial.value = false
-  } catch (error) {
-    console.error('Erreur lors de l\'ajout du tutoriel:', error)
-  }
+  await fetchTutorials()
+  closeModal()
 }
 
 const deleteTutorial = async (tutorial) => {
@@ -170,40 +126,34 @@ const deleteTutorial = async (tutorial) => {
   }
 
   try {
-    // Si le tutoriel a une image, la supprimer du storage
+    // Supprimer l'image si elle existe
     if (tutorial.image) {
-      const imageUrl = new URL(tutorial.image)
-      const imagePath = imageUrl.pathname.split('/').pop()
-      
       const { error: storageError } = await supabase.storage
-        .from('tutorial-images')
-        .remove([imagePath])
+        .from('images')
+        .remove([tutorial.image])
 
-      if (storageError) {
-        console.error('Erreur lors de la suppression de l\'image:', storageError)
-      }
+      if (storageError) throw storageError
     }
 
-    // Supprimer le tutoriel de la base de données
-    const { error: dbError } = await supabase
+    // Supprimer le tutoriel
+    const { error } = await supabase
       .from('tutoriels')
       .delete()
-      .match({ id: tutorial.id, idUtilisateur: user.value.id })
+      .eq('id', tutorial.id)
 
-    if (dbError) throw dbError
+    if (error) throw error
 
-    // Mettre à jour la liste des tutoriels localement
-    tutorials.value = tutorials.value.filter(t => t.id !== tutorial.id)
-    
+    await fetchTutorials()
   } catch (error) {
     console.error('Erreur lors de la suppression du tutoriel:', error)
     alert('Erreur lors de la suppression du tutoriel')
   }
 }
 
-const compiledMarkdown = (content) => {
-  return marked(content || '')
-}
+onMounted(async () => {
+  user.value = authStore.user
+  await fetchTutorials()
+})
 </script>
 
 <style>
