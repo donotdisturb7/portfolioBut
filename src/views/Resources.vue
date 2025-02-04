@@ -16,11 +16,11 @@
     <ResourceModal :show="showModal" :title="modalTitle" :content="modalContent" :link="modalLink" @close="closeModal" />
   </section> -->
 
-  <section class="bg-white dark:bg-gray-900">
+  <section class="bg-white">
     <div class="container px-6 py-10 mx-auto">
-        <h1 class="text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl dark:text-white">Ressources</h1>
+        <h1 class="text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl">Ressources</h1>
 
-        <p class="mt-4 text-center text-gray-500 dark:text-gray-300">
+        <p class="mt-4 text-center text-gray-500">
             Bienvenue sur le recueil des ressources
         </p>
 
@@ -29,8 +29,8 @@
                 <img class="object-cover w-full rounded-lg h-96"
                      :src="resource.image_url"
                      :alt="`Image de ${resource.titre}`">
-                <h2 class="mt-4 text-xl font-semibold text-gray-800 capitalize dark:text-white">{{ resource.titre }}</h2>
-                <p class="mt-2 text-lg tracking-wider text-blue-500 uppercase dark:text-blue-400">{{ resource.type }}</p>
+                <h2 class="mt-4 text-xl font-semibold text-gray-800 capitalize">{{ resource.titre }}</h2>
+                <p class="mt-2 text-lg tracking-wider text-blue-500 uppercase">{{ resource.type }}</p>
             </div>
         </div>
     </div>
