@@ -1,8 +1,8 @@
 <template>
   <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg">
-      <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">{{ title }}</h2>
-      <p class="text-gray-800 dark:text-white">{{ content }}</p>
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">{{ title }}</h2>
+      <p class="text-gray-800">{{ content }}</p>
       <div class="mt-4 flex justify-end space-x-4">
         <a :href="link" target="_blank" class="bg-blue-500 text-white px-4 py-2 rounded-md">Voir plus</a>
         <button @click="closeModal" class="bg-red-500 text-white px-4 py-2 rounded-md">Fermer</button>
